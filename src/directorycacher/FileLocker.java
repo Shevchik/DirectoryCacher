@@ -1,7 +1,7 @@
 package directorycacher;
 
 import java.nio.file.Path;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
 
 import com.sun.jna.IntegerType;
 import com.sun.jna.LastErrorException;
@@ -11,7 +11,7 @@ import com.sun.jna.Pointer;
 
 public class FileLocker {
 
-	private final ConcurrentHashMap<String, LockedFileInfo> lockedFiles = new ConcurrentHashMap<>();
+	private final HashMap<String, LockedFileInfo> lockedFiles = new HashMap<>();
 
 	private static class LockedFileInfo {
 		int fd;
