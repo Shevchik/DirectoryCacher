@@ -22,6 +22,7 @@ public class DirectoryWatchService {
 	}
 
 	public void start() throws IOException {
+		ExceptionShutdown.log("Starting watching of directory "+directory.getAbsolutePath());
 		Path path = directory.toPath();
 		WatchService service = path.getFileSystem().newWatchService();
 		new DirectoryWatchServicePoller(directory, service).start();
