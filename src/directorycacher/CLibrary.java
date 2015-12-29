@@ -5,12 +5,12 @@ import java.util.List;
 
 import com.sun.jna.IntegerType;
 import com.sun.jna.LastErrorException;
-import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.Platform;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 
-public interface CLibrary extends Library {
+public class CLibrary {
 
 	public static final int O_RDONLY = 0;
 
@@ -21,21 +21,23 @@ public interface CLibrary extends Library {
 
 	public static final int RLIMIT_NOFILE = 7;
 
-	CLibrary INSTANCE = (CLibrary) Native.loadLibrary("c", CLibrary.class);
+	static {
+		Native.register(Platform.C_LIBRARY_NAME);
+	}
 
-	Pointer mmap(Pointer desiredAddress, SizeT length, int pageProtectingFlags, int mapFlags, int fileDescriptor, OffT offset) throws LastErrorException;
+	public static native Pointer mmap(Pointer desiredAddress, SizeT length, int pageProtectingFlags, int mapFlags, int fileDescriptor, OffT offset) throws LastErrorException;
 
-	int munmap(Pointer address, SizeT length) throws LastErrorException;
+	public static native int munmap(Pointer address, SizeT length) throws LastErrorException;
 
-	int mlock(Pointer address, SizeT length) throws LastErrorException;
+	public static native int mlock(Pointer address, SizeT length) throws LastErrorException;
 
-	int munlock(Pointer address, SizeT length) throws LastErrorException;
+	public static native int munlock(Pointer address, SizeT length) throws LastErrorException;
 
-	int open(String path, int flags, int mode) throws LastErrorException;
+	public static native int open(String path, int flags, int mode) throws LastErrorException;
 
-	int close(int fileDescriptor) throws LastErrorException;
+	public static native int close(int fileDescriptor) throws LastErrorException;
 
-	int setrlimit(int resource, ResourceLimit limit) throws LastErrorException;
+	public static native int setrlimit(int resource, ResourceLimit limit) throws LastErrorException;
 
 	public static class SizeT extends IntegerType {
 		private static final long serialVersionUID = 1L;

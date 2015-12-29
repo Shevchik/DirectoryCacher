@@ -26,7 +26,7 @@ public class DirectoryCacher {
 			ResourceLimit rlimit = new ResourceLimit();
 			rlimit.rlim_cur = procMax;
 			rlimit.rlim_max = procMax;
-			CLibrary.INSTANCE.setrlimit(CLibrary.RLIMIT_NOFILE, rlimit);
+			CLibrary.setrlimit(CLibrary.RLIMIT_NOFILE, rlimit);
 			//bump max mmap count
 			BufferedWriter maxMapCountStream = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("/proc/sys/vm/max_map_count"))));
 			maxMapCountStream.write(String.valueOf(Integer.MAX_VALUE));

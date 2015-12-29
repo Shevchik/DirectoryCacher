@@ -31,14 +31,14 @@ public class FileLocker {
 		}
 		int fd = -1;
 		try {
-			fd = CLibrary.INSTANCE.open(absolutefilepath, CLibrary.O_RDONLY, 0);
-			Pointer addr = CLibrary.INSTANCE.mmap(null, new SizeT(fileSize), CLibrary.PROT_READ, CLibrary.MAP_SHARED, fd, new CLibrary.OffT());
-			CLibrary.INSTANCE.mlock(addr, new SizeT(fileSize));
+			fd = CLibrary.open(absolutefilepath, CLibrary.O_RDONLY, 0);
+			Pointer addr = CLibrary.mmap(null, new SizeT(fileSize), CLibrary.PROT_READ, CLibrary.MAP_SHARED, fd, new CLibrary.OffT());
+			CLibrary.mlock(addr, new SizeT(fileSize));
 			lockedFiles.put(absolutefilepath, new LockedFileInfo(fd, addr, fileSize));
 			ExceptionShutdown.log("Locked "+absolutefilepath);
 		} catch (LastErrorException e) {
 			if (fd != -1) {
-				CLibrary.INSTANCE.close(fd);
+				CLibrary.close(fd);
 			}
 			ExceptionShutdown.err("Failed to lock file "+absolutefilepath + ", err code: "+e.getErrorCode());
 		}
@@ -50,9 +50,9 @@ public class FileLocker {
 		if (fileinfo == null) {
 			return;
 		}
-		CLibrary.INSTANCE.munlock(fileinfo.addr, new SizeT(fileinfo.length));
-		CLibrary.INSTANCE.munmap(fileinfo.addr, new SizeT(fileinfo.length));
-		CLibrary.INSTANCE.close(fileinfo.fd);
+		CLibrary.munlock(fileinfo.addr, new SizeT(fileinfo.length));
+		CLibrary.munmap(fileinfo.addr, new SizeT(fileinfo.length));
+		CLibrary.close(fileinfo.fd);
 		ExceptionShutdown.log("Unlocked "+absolutefilepath);
 	}
 
