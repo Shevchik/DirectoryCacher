@@ -104,7 +104,8 @@ public class DirectoryWatchService {
 							}
 						} else if (event.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
 							if (!full.toFile().isDirectory()) {
-								locker.relockFile(full);
+								locker.unlockFile(full);
+								locker.lockFile(full);
 							}
 						}
 					}

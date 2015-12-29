@@ -56,26 +56,4 @@ public class FileLocker {
 		ExceptionShutdown.log("Unlocked "+absolutefilepath);
 	}
 
-	public void relockFile(Path path) {
-		String absolutefilepath = path.toAbsolutePath().toString();
-		LockedFileInfo fileinfo = lockedFiles.get(absolutefilepath);
-		if (fileinfo == null) {
-			return;
-		}
-		try {
-			CLibrary.INSTANCE.munlock(fileinfo.addr, new SizeT(fileinfo.length));
-			CLibrary.INSTANCE.munmap(fileinfo.addr, new SizeT(fileinfo.length));
-			long fileSize = path.toFile().length();
-			if (fileSize == 0) {
-				return;
-			}
-			fileinfo.addr = CLibrary.INSTANCE.mmap(null, new SizeT(fileSize), CLibrary.PROT_READ, CLibrary.MAP_SHARED, fileinfo.fd, new CLibrary.OffT());
-			fileinfo.length = fileSize;
-			CLibrary.INSTANCE.mlock(fileinfo.addr, new SizeT(fileinfo.length));
-		} catch (LastErrorException e) {
-			CLibrary.INSTANCE.close(fileinfo.fd);
-			ExceptionShutdown.err("Failed to relock file "+absolutefilepath + ", err code: "+e.getErrorCode());
-		}
-	}
-
 }
