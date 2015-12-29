@@ -62,7 +62,6 @@ public interface CLibrary extends Library {
 	}
 
 	public static class ResourceLimit extends Structure {
-
 		public long rlim_cur;
 		public long rlim_max;
 

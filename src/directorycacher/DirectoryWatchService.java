@@ -12,6 +12,7 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DirectoryWatchService {
@@ -38,11 +39,12 @@ public class DirectoryWatchService {
 		public DirectoryWatchServicePoller(File directory, WatchService wservice) throws IOException {
 			this.root = directory.toPath().toAbsolutePath();
 			this.wservice = wservice;
-			//add directory tree to watch service and lock already existing files
+			//lock already existing files
+			ArrayList<Path> dirsToWatch = new ArrayList<Path>();
 			Files.walkFileTree(this.root, new FileVisitor<Path>() {
 				@Override
 				public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-					watchDir(dir);
+					dirsToWatch.add(dir);
 					return FileVisitResult.CONTINUE;
 				}
 
@@ -62,6 +64,10 @@ public class DirectoryWatchService {
 					return FileVisitResult.CONTINUE;
 				}
 			});
+			//watch detected directories
+			for (Path dirToWatch : dirsToWatch) {
+				watchDir(dirToWatch);
+			}
 		}
 
 		@Override
